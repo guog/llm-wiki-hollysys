@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: Offline LLM Wiki answer/citation contract regression
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: "file://offline-provider.cjs"
+
+tests:
+  - vars:
+      question: "离线知识库能够回答什么？"
+    assert:
+      - type: contains
+        value: "[E1]"
+      - type: javascript
+        value: "output.includes('离线契约答案')"

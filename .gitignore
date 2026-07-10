@@ -492,3 +492,12 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,python,node,visualstudiocode,jetbrains+all
+
+# LLM Wiki project-local state
+.llm-wiki/
+.promptfoo/
+promptfoo-output/
+data/raw/*
+!data/raw/.gitkeep
+data/canonical/*
+!data/canonical/.gitkeep

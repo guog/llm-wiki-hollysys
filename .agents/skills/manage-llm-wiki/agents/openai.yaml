@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Wiki 管理"
+  short_description: "Compile, query, and lint a source-grounded LLM Wiki"
+  default_prompt: "Use $manage-llm-wiki to ingest documents and build or update the local source-grounded wiki."
