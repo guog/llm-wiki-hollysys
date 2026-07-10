@@ -146,4 +146,19 @@ docker save llm-wiki-hollysys:amd64 | gzip > llm-wiki-hollysys-amd64.tar.gz
 # 在目标机上：gzip -dc llm-wiki-hollysys-amd64.tar.gz | docker load
 ```
 
-仓库中的 `Docker AMD64` GitHub Actions 工作流会在相关 PR 和 `main` 更新时构建 `linux/amd64` 镜像，但不会自动发布到镜像仓库。
+仓库中的 `Docker AMD64` GitHub Actions 工作流会在相关 PR 和 `main` 更新时验证 `linux/amd64` 镜像，但不会在这些事件中发布。推送任意 Git tag 时，工作流会使用仓库的 `GITHUB_TOKEN` 自动将镜像发布到 GitHub Container Registry，镜像 tag 与 Git tag 相同：
+
+```bash
+git tag -a v0.1.0 -m "v0.1.0"
+git push origin v0.1.0
+
+docker pull ghcr.io/guog/llm-wiki-hollysys:v0.1.0
+```
+
+仓库是私有仓库时，拉取前需要登录 GHCR：
+
+```bash
+gh auth token | docker login ghcr.io -u guog --password-stdin
+```
+
+发布不需要额外配置 PAT；workflow 使用 `packages: write` 权限的内置 `GITHUB_TOKEN`。镜像仍然只包含 `linux/amd64` CPU 运行时，不会把模型、`.env` 或 Raw Zone 数据推送到 GHCR。

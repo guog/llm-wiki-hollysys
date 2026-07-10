@@ -18,6 +18,8 @@ The default PDF backend is PyMuPDF. For scanned or layout-heavy documents, confi
 
 Build the production image with `docker buildx build --platform linux/amd64 --load -t llm-wiki-hollysys:amd64 .`. Prefer `docker compose run --rm wiki <command>` so Raw Zone stays read-only and qmd state/models persist in named volumes. Export `LLM_WIKI_UID=$(id -u)` and `LLM_WIKI_GID=$(id -g)` on Linux before running Compose. Pass DeepSeek settings through `--env-file` or container environment variables; never copy `.env` into an image.
 
+Pushing a Git tag publishes the CPU-only AMD64 image as `ghcr.io/guog/llm-wiki-hollysys:<tag>`. The workflow uses the built-in `GITHUB_TOKEN`; do not add a PAT or registry password. PR and branch builds validate only and must keep `push: false` through the tag-ref condition.
+
 ## Failure handling
 
 - On 401, 402, or 422, fix credentials, balance, or parameters; do not retry automatically.
