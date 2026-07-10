@@ -41,3 +41,7 @@
 PyMuPDF 的 AGPL/商业双重许可比本项目多数依赖更严格。若你的分发或闭源使用方式与 AGPL 不兼容，应在部署前移除相关可选路径并使用 qmd 的其他 PDF 后端，或向 Artifex 获取商业许可。此清单不是法律意见；发布前应审阅各依赖随包附带的完整 LICENSE。
 
 DeepSeek API 是外部服务，不属于开源依赖；其使用受 DeepSeek 服务条款约束。本仓库不捆绑模型权重，embedding 只有在显式运行 `npm run wiki -- embed` 时才会下载。
+
+## 容器基础组件
+
+生产镜像基于官方 Node.js 22 Bookworm Slim 镜像（Node.js 为 MIT），构建阶段使用 [uv](https://github.com/astral-sh/uv) 0.11.28（MIT 或 Apache-2.0），运行阶段使用 Tini（MIT）处理信号、gosu（Apache-2.0）降权，并从 Debian 安装 Python 3、CA certificates 与 GNU OpenMP 运行库。Debian 二进制包各自保留上游许可证和 `/usr/share/doc` 中的版权信息。

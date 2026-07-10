@@ -22,3 +22,4 @@
 - Run `npm run verify` after changing code, prompts, scripts, or Skill files.
 - Run `npm run wiki -- lint` after applying Wiki changes.
 - Keep the runtime compatible with Node.js 22.22+ and Python 3.10–3.13.
+- Run `docker buildx build --platform linux/amd64 --load -t llm-wiki-hollysys:amd64 .` after changing Docker runtime files; the production image must remain x86_64-only and must not contain `.env` or Raw Zone data.

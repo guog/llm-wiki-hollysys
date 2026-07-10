@@ -1,0 +1,48 @@
+name: Docker AMD64
+
+on:
+  pull_request:
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - docker-compose.yml
+      - package.json
+      - package-lock.json
+      - pyproject.toml
+      - uv.lock
+      - src/**
+      - prompts/**
+      - scripts/docker-entrypoint.sh
+      - scripts/extract_xlsx.py
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - docker-compose.yml
+      - package.json
+      - package-lock.json
+      - pyproject.toml
+      - uv.lock
+      - src/**
+      - prompts/**
+      - scripts/docker-entrypoint.sh
+      - scripts/extract_xlsx.py
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          tags: llm-wiki-hollysys:ci-amd64
+          build-args: VCS_REF=${{ github.sha }}

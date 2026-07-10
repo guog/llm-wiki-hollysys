@@ -1,0 +1,17 @@
+**
+!package.json
+!package-lock.json
+!pyproject.toml
+!uv.lock
+!tsconfig.json
+!tsconfig.build.json
+!src/
+!src/**
+!prompts/
+!prompts/**
+!scripts/
+!scripts/extract_xlsx.py
+!scripts/docker-entrypoint.sh
+!data/
+!data/wiki/
+!data/wiki/index.md

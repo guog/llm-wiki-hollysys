@@ -9,6 +9,8 @@
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "wiki": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -16,7 +18,7 @@
     "eval:promptfoo": "PROMPTFOO_DISABLE_TELEMETRY=1 promptfoo eval -c evals/promptfooconfig.offline.yaml --no-share",
     "eval:live": "PROMPTFOO_DISABLE_TELEMETRY=1 promptfoo eval -c evals/promptfooconfig.yaml --env-file .env --no-share",
     "validate:skill": "bash scripts/validate-skill.sh",
-    "verify": "npm run typecheck && npm test && npm run eval && npm run eval:promptfoo && npm run validate:skill"
+    "verify": "npm run typecheck && npm run build && npm test && npm run eval && npm run eval:promptfoo && npm run validate:skill"
   },
   "dependencies": {
     "@langchain/textsplitters": "1.0.1",

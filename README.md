@@ -94,3 +94,56 @@ Wiki 页面只允许写入 `sources/`、`concepts/`、`entities/`、`comparisons
 把 `evals/cases.example.jsonl` 复制为 `evals/cases.jsonl`，填写问题和预期来源路径后运行 `npm run eval`。`npm run verify` 还会运行不联网的 Promptfoo contract regression。`npm run eval:live` 才会读取 DeepSeek 配置并进行付费调用；它不会自动上传评测结果。
 
 真实 API 冒烟测试只在显式设置 `RUN_DEEPSEEK_SMOKE=1` 时运行。
+
+## Linux x86_64 Docker 镜像
+
+镜像只支持 `linux/amd64`（x86_64），会在构建时拒绝其他架构。它使用多阶段构建，最终镜像不包含 Promptfoo、测试代码、`.env`、Raw Zone 或本地模型，并只保留 node-llama-cpp 的 x64 CPU 后端，不包含 CUDA/Vulkan 运行库。
+
+在开发机或 Linux 构建机上执行：
+
+```bash
+docker buildx build \
+  --platform linux/amd64 \
+  --load \
+  --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+  -t llm-wiki-hollysys:amd64 .
+```
+
+推荐用 Compose 运行。先准备 `.env`、`data/raw/` 和 `data/wiki/`，并让容器内进程使用当前 Linux 用户的 UID/GID：
+
+```bash
+export LLM_WIKI_UID="$(id -u)"
+export LLM_WIKI_GID="$(id -g)"
+
+docker compose build
+docker compose run --rm wiki doctor
+docker compose run --rm wiki index /app/data/raw
+docker compose run --rm wiki ingest /app/data/raw/handbook.pdf
+docker compose run --rm wiki ingest /app/data/raw/handbook.pdf --apply
+docker compose run --rm wiki query "系统的主要约束是什么？"
+```
+
+Compose 将 `data/raw/` 以只读方式挂载，将 `data/wiki/` 挂载为可审阅结果，并使用 named volumes 保存 Canonical Markdown、qmd 数据库和按需下载的模型。容器入口只以 root 准备这些挂载目录，随后通过 `gosu` 降权到 `LLM_WIKI_UID:LLM_WIKI_GID` 执行 CLI。
+
+不使用 Compose 时：
+
+```bash
+docker run --rm --platform linux/amd64 \
+  --env-file .env \
+  -e LLM_WIKI_UID="$(id -u)" \
+  -e LLM_WIKI_GID="$(id -g)" \
+  -v "$(pwd)/data/raw:/app/data/raw:ro" \
+  -v "$(pwd)/data/wiki:/app/data/wiki" \
+  -v llm-wiki-canonical:/app/data/canonical \
+  -v llm-wiki-state:/state \
+  llm-wiki-hollysys:amd64 doctor
+```
+
+如需传输到另一台未连接镜像仓库的 Linux x86_64 机器，可使用 `docker save`/`docker load`：
+
+```bash
+docker save llm-wiki-hollysys:amd64 | gzip > llm-wiki-hollysys-amd64.tar.gz
+# 在目标机上：gzip -dc llm-wiki-hollysys-amd64.tar.gz | docker load
+```
+
+仓库中的 `Docker AMD64` GitHub Actions 工作流会在相关 PR 和 `main` 更新时构建 `linux/amd64` 镜像，但不会自动发布到镜像仓库。

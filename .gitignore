@@ -497,6 +497,7 @@ $RECYCLE.BIN/
 .llm-wiki/
 .promptfoo/
 promptfoo-output/
+*.tar.gz
 data/raw/*
 !data/raw/.gitkeep
 data/canonical/*

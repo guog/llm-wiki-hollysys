@@ -14,6 +14,10 @@ Use BM25 immediately after setup. Run `npm run wiki -- embed` explicitly to down
 
 The default PDF backend is PyMuPDF. For scanned or layout-heavy documents, configure an upstream qmd MinerU local or MinerU Cloud provider. Keep provider credentials in environment variables, never in tracked JSON.
 
+## Linux x86_64 containers
+
+Build the production image with `docker buildx build --platform linux/amd64 --load -t llm-wiki-hollysys:amd64 .`. Prefer `docker compose run --rm wiki <command>` so Raw Zone stays read-only and qmd state/models persist in named volumes. Export `LLM_WIKI_UID=$(id -u)` and `LLM_WIKI_GID=$(id -g)` on Linux before running Compose. Pass DeepSeek settings through `--env-file` or container environment variables; never copy `.env` into an image.
+
 ## Failure handling
 
 - On 401, 402, or 422, fix credentials, balance, or parameters; do not retry automatically.

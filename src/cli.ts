@@ -31,18 +31,21 @@ program
   .description("Check runtime, parsers, qmd, and redacted DeepSeek configuration")
   .action(async () => {
     const settings = loadSettings();
+    const containerRuntime = process.env.LLM_WIKI_CONTAINER === "1";
     const checks: Record<string, unknown> = {
       node: process.version,
+      containerRuntime,
       qmdInstalled: existsSync(settings.qmdBin),
       pythonEnvironment: existsSync(settings.pythonBin),
       rawDirectory: existsSync(settings.rawDir),
       canonicalDirectory: existsSync(settings.canonicalDir),
       wikiDirectory: existsSync(settings.wikiDir),
-      envIgnored:
-        existsSync(resolve(settings.rootDir, ".gitignore")) &&
-        readFileSync(resolve(settings.rootDir, ".gitignore"), "utf8")
-          .split(/\r?\n/)
-          .some((line) => line.trim() === ".env"),
+      envIgnored: containerRuntime
+        ? "not-applicable; inject environment at runtime"
+        : existsSync(resolve(settings.rootDir, ".gitignore")) &&
+          readFileSync(resolve(settings.rootDir, ".gitignore"), "utf8")
+            .split(/\r?\n/)
+            .some((line) => line.trim() === ".env"),
       configuration: redactedSettings(settings),
     };
     if (existsSync(settings.pythonBin)) {
