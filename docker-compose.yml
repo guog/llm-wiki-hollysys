@@ -1,0 +1,24 @@
+services:
+  wiki:
+    image: llm-wiki-hollysys:amd64
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VCS_REF: ${VCS_REF:-local}
+    env_file:
+      - .env
+    environment:
+      LLM_WIKI_UID: ${LLM_WIKI_UID:-1000}
+      LLM_WIKI_GID: ${LLM_WIKI_GID:-1000}
+    volumes:
+      - ./data/raw:/app/data/raw:ro
+      - ./data/wiki:/app/data/wiki
+      - llm-wiki-canonical:/app/data/canonical
+      - llm-wiki-state:/state
+    command: doctor
+
+volumes:
+  llm-wiki-canonical:
+  llm-wiki-state:
