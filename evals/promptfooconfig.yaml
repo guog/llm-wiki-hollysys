@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: LLM Wiki end-to-end grounded answer smoke evaluation
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: "exec:bash scripts/promptfoo-provider.sh"
+    label: "local-llm-wiki"
+
+tests:
+  - description: "Replace this case with a question supported by data/raw"
+    vars:
+      question: "替换为当前知识库能够回答的问题"
+    assert:
+      - type: "contains"
+        value: "[E"
