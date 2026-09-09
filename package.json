@@ -24,7 +24,7 @@
     "@langchain/textsplitters": "1.0.1",
     "@modelcontextprotocol/sdk": "1.29.0",
     "commander": "15.0.0",
-    "csv-parse": "6.1.0",
+    "csv-parse": "7.0.2",
     "diff": "9.0.0",
     "dotenv": "17.4.2",
     "fast-glob": "3.3.3",
